@@ -5,9 +5,11 @@ from typing import List
 import re
 from os import getenv
 import mysql.connector
+from mysql.connector import connection
 
-
-PII_FIELDS = (name, email, phone, ssn, password, ip, last_login, user_agent)
+PII_FIELDS = (
+        "name", "email", "phone", "ssn",
+        "password", "ip", "last_login", "user_agent")
 
 
 def filter_datum(
@@ -52,17 +54,11 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> mysql.connector.connection.MySQLConnection:
+def get_db() -> connection.MySQLConnection:
     """get db module"""
-    host_name = getenv("PERSONAL_DATA_DB_HOST")
-    if host_name is None:
-        host_name = "localhost"
-    user_name = getenv("PERSONAL_DATA_DB_USERNAME")
-    if user_name is None:
-        user_name = "root"
-    pass_word = getenv("PERSONAL_DATA_DB_PASSWORD")
-    if pass_word is None:
-        pass_word = ""
+    host_name = getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    user_name = getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    pass_word = getenv("PERSONAL_DATA_DB_PASSWORD", "")
     return mysql.connector.connect(
             host=host_name,
             user=user_name,
