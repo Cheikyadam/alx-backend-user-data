@@ -70,8 +70,7 @@ def dict_to_string(row):
     """helper func"""
     return ';'.join(f"{key}={value}" for key, value in row.items())
 
-
-if __name__ == "__main__":
+def main() -> None:
     """main function here"""
     message = ""
     log_record = logging.LogRecord(
@@ -88,3 +87,7 @@ if __name__ == "__main__":
         print(formatter.format(log_record))
     cursor.close()
     db.close()
+
+if __name__ == "__main__":
+    """exectue main func"""
+    main()
