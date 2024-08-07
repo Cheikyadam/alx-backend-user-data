@@ -64,3 +64,30 @@ def get_db() -> connection.MySQLConnection:
             user=user_name,
             password=pass_word,
             database=getenv("PERSONAL_DATA_DB_NAME"))
+
+
+def dict_to_string(row):
+    """helper func"""
+    return ';'.join(f"{key}={value}" for key, value in row.items())
+
+def main() -> None:
+    """main function here"""
+    message = ""
+    log_record = logging.LogRecord(
+            "user_data", logging.INFO, None, None, message, None, None)
+    formatter = RedactingFormatter(
+            fields=("name", "email", "phone", "ssn", "password"))
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users;")
+    rows = cursor.fetchall()
+    for row in rows:
+        message = dict_to_string(row)
+        log_record.msg = message
+        print(formatter.format(log_record))
+    cursor.close()
+    db.close()
+
+if __name__ == "__main__":
+    """exectue main func"""
+    main()
