@@ -32,7 +32,8 @@ class SessionDBAuth(SessionExpAuth):
                         return None
                     return res[0].user_id
             except Exception as e:
-                print(e)
+                return None
+            return None
 
     def destroy_session(self, request=None):
         """destroy session"""
@@ -43,5 +44,6 @@ class SessionDBAuth(SessionExpAuth):
             try:
                 res = UserSession.search({"session_id": session_id})
                 res[0].remove()
+                return True
             except Exception:
-                pass
+                return False
