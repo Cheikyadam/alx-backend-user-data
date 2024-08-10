@@ -56,12 +56,15 @@ class BasicAuth(Auth):
             return None
         if user_pwd is None or type(user_pwd) is not str:
             return None
-        res = (User.search({'email': user_email}))
-        if len(res) == 0:
+        try:
+            res = (User.search({'email': user_email}))
+            if len(res) == 0:
+                return None
+            if res[0].is_valid_password(user_pwd):
+                return res[0]
             return None
-        if res[0].is_valid_password(user_pwd):
-            return res[0]
-        return None
+        except Exception:
+            return None
 
     def current_user(self, request=None) -> TypeVar('User'):
         """current user"""
