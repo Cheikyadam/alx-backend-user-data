@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from typing import TypeVar
+from typing import TypeVar, Dict
 from user import Base
 from user import User
 
@@ -42,7 +42,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs) -> TypeVar('User'):
+    def find_user_by(self, **kwargs: Dict) -> TypeVar('User'):
         """find user by"""
         try:
             user = self._session.query(User).filter_by(**kwargs).one()
@@ -51,3 +51,13 @@ class DB:
             raise NoResultFound()
         except InvalidRequestError:
             raise InvalidRequestError()
+
+    def update_user(self, user_id: int, **kwargs: Dict) -> None:
+        """update _ user"""
+        user = self.find_user_by(id=user_id)
+        keys = list(kwargs.keys())
+        if user is not None:
+            if hasattr(user, keys[0]) is True:
+                setattr(user, keys[0], kwargs.get(keys[0]))
+            else:
+                raise ValueError()
