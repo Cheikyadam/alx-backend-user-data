@@ -2,7 +2,7 @@
 """auth module"""
 import bcrypt
 from db import DB
-from typing import TypeVar
+from typing import TypeVar, Dict
 
 
 def _hash_password(password: str) -> bytes:
