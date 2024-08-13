@@ -2,7 +2,7 @@
 """auth module"""
 import bcrypt
 from db import DB
-from typing import TypeVar, Dict
+from user import User
 
 
 def _hash_password(password: str) -> bytes:
@@ -19,7 +19,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str) -> TypeVar('User'):
+    def register_user(self, email: str, password: str) -> User:
         """register user in db"""
         error = False
         try:
