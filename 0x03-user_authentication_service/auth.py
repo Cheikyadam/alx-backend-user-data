@@ -76,3 +76,4 @@ class Auth:
         """destroy session"""
         my_dict = {"session_id": None}
         self._db.update_user(user.id, **my_dict)
+        return None
