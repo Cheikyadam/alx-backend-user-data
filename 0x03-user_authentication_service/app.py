@@ -30,8 +30,8 @@ def users() -> str:
 
 
 @app.route("/sessions", methods=["POST"])
-def login() -> str:
-    """login func"""
+def login():
+    """login function"""
     try:
         email = request.form.get("email")
         pwd = request.form.get("password")
@@ -44,6 +44,29 @@ def login() -> str:
             abort(401)
     except Exception as e:
         abort(401)
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout():
+    """logout function"""
+    session_id = request.cookies.get("session_id")
+    user = auth.get_user_from_session_id(session_id)
+    if user is None:
+        abort(403)
+    else:
+        auth.destroy_session(user.id)
+        return redirect(url_for("index"))
+
+
+@app.route("/profile", methods=["GET"])
+def profile():
+    """get profile"""
+    session_id = request.cookies.get("session_id")
+    user = auth.get_user_from_session_id(session_id)
+    if user is None:
+        return jsonify({}), 403
+    else:
+        return jsonify({"email": user.email}), 200
 
 
 if __name__ == "__main__":
