@@ -25,7 +25,6 @@ def users() -> str:
         except ValueError:
             return jsonify({"message": "email already registered"}), 400
     except Exception as e:
-        print(f"error: {e}")
         return jsonify({"error": "wrong format"}), 404
 
 
