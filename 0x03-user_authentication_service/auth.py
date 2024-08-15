@@ -97,11 +97,11 @@ class Auth:
         try:
             user = self._db.find_user_by(reset_token=reset_token)
             my_dict1 = {"reset_token": None}
-            my_dict2 = {"hashed_password", _hash_password(password)}
+            my_dict2 = {"hashed_password": _hash_password(password)}
             self._db.update_user(user.id, **my_dict1)
             self._db.update_user(user.id, **my_dict2)
             return None
-        except Exception:
+        except Exception as e:
             pass
 
-        raise ValueError()
+        raise ValueError("Not found")
