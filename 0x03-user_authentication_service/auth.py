@@ -77,3 +77,15 @@ class Auth:
         my_dict = {"session_id": None}
         self._db.update_user(user_id, **my_dict)
         return None
+
+    def get_reset_password_token(self, email: str) -> str:
+        """get reset pwd token"""
+        try:
+            user = self._db.find_user_by(email=email)
+            token = _generate_uuid()
+            user.reset_token = token
+            my_dict = {"reset_token": token}
+            self._db.update_user(user.id, **my_dict)
+            return token
+        except Exception as e:
+            raise ValueError()
