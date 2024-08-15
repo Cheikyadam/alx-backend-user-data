@@ -87,5 +87,7 @@ class Auth:
             my_dict = {"reset_token": token}
             self._db.update_user(user.id, **my_dict)
             return token
-        except Exception as e:
-            raise ValueError()
+        except Exception:
+            pass
+
+        raise ValueError()
