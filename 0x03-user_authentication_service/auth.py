@@ -84,8 +84,8 @@ class Auth:
             user = self._db.find_user_by(email=email)
             token = _generate_uuid()
             user.reset_token = token
-            my_dict = {"reset_token": token}
-            self._db.update_user(user.id, **my_dict)
+            #my_dict = {"reset_token": token}
+            #self._db.update_user(user.id, **my_dict)
             return token
         except Exception:
             pass
