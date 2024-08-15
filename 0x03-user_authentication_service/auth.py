@@ -83,10 +83,24 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
             token = _generate_uuid()
-            # user.reset_token = token
+            user.reset_token = token
             my_dict = {"reset_token": token}
             self._db.update_user(user.id, **my_dict)
             return token
+        except Exception:
+            pass
+
+        raise ValueError()
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """update pwd"""
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+            my_dict1 = {"reset_token": None}
+            my_dict2 = {"hashed_password", _hash_password(password)}
+            self._db.update_user(user.id, **my_dict1)
+            self._db.update_user(user.id, **my_dict2)
+            return None
         except Exception:
             pass
 
