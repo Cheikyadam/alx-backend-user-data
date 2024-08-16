@@ -4,7 +4,7 @@ from flask import Flask, url_for, redirect, Response, abort, jsonify, request
 from auth import Auth
 
 app = Flask(__name__)
-auth = Auth()
+AUTH = Auth()
 
 
 @app.route("/")
@@ -20,7 +20,7 @@ def users() -> str:
         email = request.form.get("email")
         pwd = request.form.get("password")
         try:
-            auth.register_user(email, pwd)
+            AUTH.register_user(email, pwd)
             return jsonify({"email": email, "message": "user created"})
         except ValueError:
             return jsonify({"message": "email already registered"}), 400
@@ -36,8 +36,8 @@ def login() -> Response:
         pwd = request.form.get("password")
         if not email or not pwd:
             abort(401)
-        if auth.valid_login(email, pwd):
-            session_id = auth.create_session(email)
+        if AUTH.valid_login(email, pwd):
+            session_id = AUTH.create_session(email)
             out = jsonify({"email": email, "message": "logged in"})
             out.set_cookie("session_id", session_id)
             return out
@@ -51,11 +51,11 @@ def login() -> Response:
 def logout():
     """logout function"""
     session_id = request.cookies.get("session_id")
-    user = auth.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
     else:
-        auth.destroy_session(user.id)
+        AUTH.destroy_session(user.id)
         return redirect(url_for("index"))
 
 
@@ -63,7 +63,7 @@ def logout():
 def profile() -> str:
     """get profile"""
     session_id = request.cookies.get("session_id")
-    user = auth.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(session_id)
     if user is None:
         return jsonify({}), 403
     else:
@@ -75,10 +75,10 @@ def get_reset_password_token() -> str:
     """get reset pwd token"""
     try:
         email = request.form.get("email")
-        session_id = auth.create_session(email)
+        session_id = AUTH.create_session(email)
         if session_id is None:
             return jsonify({}), 403
-        token = auth.get_reset_password_token(email)
+        token = AUTH.get_reset_password_token(email)
         return jsonify({"email": email, "reset_token": token}), 200
     except Exception:
         return jsonify({}), 403
@@ -91,7 +91,7 @@ def update_password() -> str:
         email = request.form.get("email")
         token = request.form.get("reset_token")
         pwd = request.form.get("new_password")
-        auth.update_password(token, pwd)
+        AUTH.update_password(token, pwd)
         return jsonify({"email": email, "message": "Password updated"}), 200
     except Exception as e:
         return jsonify({}), 403
